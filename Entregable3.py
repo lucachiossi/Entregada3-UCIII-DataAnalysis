@@ -107,7 +107,3 @@ plt.close()
 sns.jointplot(data_set['T_MAX'],data_set['O3'], kind="reg")
 plt.show()
 plt.close()
-
-
-
-##
