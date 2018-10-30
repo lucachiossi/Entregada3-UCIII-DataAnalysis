@@ -17,6 +17,24 @@ folder = "C:/Users/lucac_000/Desktop/Luca/UNIVERSITA/__MAGISTRALE__/_II_anno/M1_
 # Read DataSet
 data_set = pd.read_csv(folder + "meteo_calidad_2015.csv", decimal=",", sep=";")
 
+# Import dataset and renaming columns
+data_set.rename(columns ={'TOL':'Tolueno'}, inplace=True)
+data_set.rename(columns ={'TOL_MAX':'Tolueno_MAX'}, inplace=True)
+data_set.rename(columns ={'BEN':'Benceno'}, inplace=True)
+data_set.rename(columns ={'BEN_MAX':'Benceno_MAX'}, inplace=True)
+data_set.rename(columns ={'EBE':'Ethilbenceno'}, inplace=True)
+data_set.rename(columns ={'EBE_MAX':'Ethilbenceno_MAX'}, inplace=True)
+data_set.rename(columns ={'MXY':'Metaxileno'}, inplace=True)
+data_set.rename(columns ={'MXY_MAX':'Metaxileno_MAX'}, inplace=True)
+data_set.rename(columns ={'PXY':'Paraxileno'}, inplace=True)
+data_set.rename(columns ={'PXY_MAX':'Paraxileno_MAX'}, inplace=True)
+data_set.rename(columns ={'OXY':'Ortoxileno'}, inplace=True)
+data_set.rename(columns ={'OXY_MAX':'Ortoxileno_MAX'}, inplace=True)
+data_set.rename(columns ={'TCH':'Hidrocarburos totales'}, inplace=True)
+data_set.rename(columns ={'TCH_MAX':'Hidrocarburos totales_MAX'}, inplace=True)
+data_set.rename(columns ={'NMCH':'Hidrocarburos no metánicos'}, inplace=True)
+data_set.rename(columns ={'NMCH_MAX':'Hidrocarburos no metánicos_MAX'}, inplace=True)
+
 f = open(folder + "dataset.txt", "w")
 f.write(data_set.to_string())
 f.close()
@@ -31,6 +49,12 @@ f.close()
 # Read data description
 f = open(folder + "dataset_describe.txt","w")
 f.write(data_set.describe().to_string())
+f.close()
+
+# Correlation Matrix
+data_set_corr = data_set.corr()
+f = open(folder + "dataset_corr.txt","w")
+f.write(data_set_corr.to_string())
 f.close()
 
 # Calculate the max temperature of Jan
@@ -51,10 +75,54 @@ f.close()
 # Similitude rate between max-temperature and normal-distribution
 z = (data_set['T_MAX']-np.mean(data_set['T_MAX']))/np.std(data_set['T_MAX'])
 sci.stats.probplot(z, dist="norm", plot=plt)
-plt.title("Normal 0-0 plot")
+plt.title("Normal Q-Q plot")
 plt.show()
 
 # Histogram
-# attr = data_set["T_MAX"]
-# plt.hist(attr, bins=25)
-# plt.show()
+plt.hist(z, bins=10, density=1)
+plt.title("Histograma")
+plt.show()
+
+
+# In[9]:
+
+
+sci.stats.kurtosis(z, bias=False) # No funciona
+plt.title("kurtosis plot")
+plt.show()
+
+
+# In[16]:
+
+
+df= data_set.sort_values(['T_MAX','CO'],ascending=True)
+plt.plot(df['T_MAX'], df['CO'])
+plt.title("La concentración de CO frente a la temperatura máxima")
+plt.show()
+
+
+# In[17]:
+
+
+df= data_set.sort_values(['T_MAX','O3'],ascending=True)
+plt.plot(df['T_MAX'], df['O3'])
+plt.title("La concentración de Ozono frente a la temperatura máxima")
+plt.show()
+
+
+# In[15]:
+
+
+sns.jointplot(data_set['T_MAX'],data_set['CO'], kind="reg")
+
+
+# In[16]:
+
+
+sns.jointplot(data_set['T_MAX'],data_set['O3'], kind="reg")
+
+
+# In[18]:
+
+
+sns.pairplot(data_set['T_MAX'],data_set['O3'])
