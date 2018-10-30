@@ -13,7 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
 folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
-#C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/
+# folder = "C:\Users\lucac_000\Desktop\Luca\UNIVERSITA\__MAGISTRALE__\_II_anno\M1_Analisis_de_Datos\___Lboratory\documents_lab_3\shared work"
 
 
 ## Read DataSet
