@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
-folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2"
+folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
 
 ## Read DataSet
 data_set = pd.read_csv(folder + "meteo_calidad_2015.csv", decimal=",", sep=";")
@@ -102,5 +102,8 @@ plt.show()
 
 ## Pairplot
 sns.jointplot(data_set['T_MAX'],data_set['CO'], kind="reg")
+plt.show()
+plt.close()
 sns.jointplot(data_set['T_MAX'],data_set['O3'], kind="reg")
-
+plt.show()
+plt.close()
