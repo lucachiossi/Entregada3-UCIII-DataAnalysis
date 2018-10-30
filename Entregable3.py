@@ -13,6 +13,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
 folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
+#C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/
+
 
 ## Read DataSet
 data_set = pd.read_csv(folder + "meteo_calidad_2015.csv", decimal=",", sep=";")
@@ -110,4 +112,8 @@ f = open(folder + "dataset_corr.txt","w")
 f.write(data_set_corr.to_string())
 f.close()
 
-loll
+# HeatMap
+
+sns.heatmap(data_set.corr())
+plt.show()
+plt.close()
