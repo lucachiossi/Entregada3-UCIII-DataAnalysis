@@ -51,11 +51,7 @@ f = open(folder + "dataset_describe.txt","w")
 f.write(data_set.describe().to_string())
 f.close()
 
-# Correlation Matrix
-data_set_corr = data_set.corr()
-f = open(folder + "dataset_corr.txt","w")
-f.write(data_set_corr.to_string())
-f.close()
+
 
 ## Calculate the max temperature of Jan
 data_set_January = data_set[data_set.Mes == 'ENE']
@@ -107,3 +103,11 @@ plt.close()
 sns.jointplot(data_set['T_MAX'],data_set['O3'], kind="reg")
 plt.show()
 plt.close()
+
+## Correlation Matrix
+data_set_corr = data_set.corr()
+f = open(folder + "dataset_corr.txt","w")
+f.write(data_set_corr.to_string())
+f.close()
+
+loll
