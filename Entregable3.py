@@ -37,14 +37,10 @@ data_set.rename(columns ={'TCH_MAX':'Hidrocarburos totales_MAX'}, inplace=True)
 data_set.rename(columns ={'NMCH':'Hidrocarburos no metánicos'}, inplace=True)
 data_set.rename(columns ={'NMCH_MAX':'Hidrocarburos no metánicos_MAX'}, inplace=True)
 
-f = open(folder + "dataset.txt", "w")
-f.write(data_set.to_string())
-f.close()
-
 # Delete "Dia" column
 data_set.drop('Dia', axis=1, inplace=True)
 
-f = open(folder + "dataset_ready.txt", "w")
+f = open(folder + "dataset.txt", "w")
 f.write(data_set.to_string())
 f.close()
 
@@ -52,8 +48,6 @@ f.close()
 f = open(folder + "dataset_describe.txt","w")
 f.write(data_set.describe().to_string())
 f.close()
-
-
 
 ## Calculate the max temperature of Jan
 data_set_January = data_set[data_set.Mes == 'ENE']
@@ -69,6 +63,8 @@ data_set_month = data_set.groupby(['Mes'])
 f = open(folder + "dataset_by_month.txt","w")
 f.write(data_set_month.describe().to_string())
 f.close()
+print (data_set_month['T_MAX'].agg(np.mean))
+print("Temperatura maximal media del ano" , data_set_month['T_MAX'].agg(np.mean).agg(np.mean), "°C")
 
 ## QQ plot: Similitude rate between max-temperature and normal-distribution
 z = (data_set['T_MAX']-np.mean(data_set['T_MAX']))/np.std(data_set['T_MAX'])
@@ -112,8 +108,13 @@ f = open(folder + "dataset_corr.txt","w")
 f.write(data_set_corr.to_string())
 f.close()
 
-# HeatMap
-
-sns.heatmap(data_set.corr())
+## HeatMap
+mask = np.zeros((30,30))
+for i in range (0,30):
+    for j in range (0,30):
+        if i<j:
+            mask[i,j]=True
+sns.heatmap(data_set.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=0.4, cbar= True, square = True, mask = mask)
 plt.show()
 plt.close()
+# Se puede observa 2 diagonales rojas (de alta correlacion). La primera es la diagonal principal y la segunda es cada elemento en frente del mismo elemente_MAX. Entonces no es relevante conservar las valores MAX.
