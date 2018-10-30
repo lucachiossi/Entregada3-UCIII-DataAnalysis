@@ -107,6 +107,8 @@ data_set_corr = data_set.corr()
 f = open(folder + "dataset_corr.txt","w")
 f.write(data_set_corr.to_string())
 f.close()
+NO2 = data_set_corr['NO2']
+print(NO2.sort_values())
 
 ## HeatMap
 mask = np.zeros((30,30))
@@ -118,3 +120,10 @@ sns.heatmap(data_set.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=
 plt.show()
 plt.close()
 # Se puede observa 2 diagonales rojas (de alta correlacion). La primera es la diagonal principal y la segunda es cada elemento en frente del mismo elemente_MAX. Entonces no es relevante conservar las valores MAX.
+
+# Delete columns   CO_MAX  NO_MAX  NO2_MAX  PM2.5_MAX  PM10_MAX  O3_MAX  Tolueno_MAX  Benceno_MAX  Ethilbenceno_MAX  Hidrocarburos totales_MAX  Hidrocarburos no metánicos_MAX
+data_set.drop('SO2_MAX', axis=1, inplace=True)
+
+f = open(folder + "dataset_V2.txt", "w")
+f.write(data_set.to_string())
+f.close()
