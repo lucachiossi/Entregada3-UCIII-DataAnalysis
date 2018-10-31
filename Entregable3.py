@@ -122,3 +122,43 @@ for i in range (0,31):
 sns.heatmap(data_set_corr.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=0.4, cbar= True, square = True, mask = mask)
 plt.show()
 plt.close()
+
+
+## Delete columns                       
+data_set.drop('SO2_MAX', axis=1, inplace=True)
+data_set.drop('CO_MAX', axis=1, inplace=True)
+data_set.drop('NO_MAX', axis=1, inplace=True)
+data_set.drop('NO2_MAX', axis=1, inplace=True)
+data_set.drop('PM2.5_MAX', axis=1, inplace=True)
+data_set.drop('PM10_MAX', axis=1, inplace=True)
+data_set.drop('O3_MAX', axis=1, inplace=True)
+data_set.drop('Tolueno_MAX', axis=1, inplace=True)
+data_set.drop('Benceno_MAX', axis=1, inplace=True)
+data_set.drop('Ethilbenceno_MAX', axis=1, inplace=True)
+data_set.drop('Hidrocarburos totales_MAX', axis=1, inplace=True)
+data_set.drop('Hidrocarburos no metánicos_MAX', axis=1, inplace=True)
+
+f = open(folder + "dataset_V2.txt", "w")
+f.write(data_set.to_string())
+f.close()
+
+## NO2 con Viento_Max
+
+NO2 = data_set['NO2']
+viento_max = data_set['Viento_MAX']
+T_max = data_set['T_MAX']
+lluvia = data_set['Lluvia']
+regressor = LinearRegression()
+
+regressor.fit(viento_max, NO2)
+print("R cuadrado test = ", regressor.score(NO2, viento_max))
+
+## NO2 con Viento_MAX y T_MAX
+
+X = data_set[['Viento_MAX', 'T_MAX']]
+for train_index, test_index in split(X):
+    X_train, X_test = X.iloc[train_index], X.iloc[test_index]
+    y_train, y_test = NO2.iloc[train_index], NO2.iloc[test_index]
+    regressor.fit(X_train, y_train)
+    print("R cuadrado test = ", regressor.score(X_test, y_test))
+    y_pred = regressor.predict(X_test)
