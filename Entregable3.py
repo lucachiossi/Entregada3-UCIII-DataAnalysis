@@ -12,8 +12,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
-# folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
-folder = "C:/Users/lucac_000/Desktop/Luca/UNIVERSITA/__MAGISTRALE__/_II_anno/M1_Analisis_de_Datos/___Lboratory/documents_lab_3/shared work/"
+folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
+#folder = "C:/Users/lucac_000/Desktop/Luca/UNIVERSITA/__MAGISTRALE__/_II_anno/M1_Analisis_de_Datos/___Lboratory/documents_lab_3/shared work/"
 
 
 ## Read DataSet
@@ -147,21 +147,22 @@ f.close()
 
 ## NO2 con Viento_Max
 
-NO2 = data_set['NO2']
-viento_max = data_set['Viento_MAX']
+# print(data_set['NO2'].shape)
+# print(data_set['Viento_MAX'].shape)
+NO2 = data_set['NO2'].values.reshape(-1,1)
+viento_max = data_set['Viento_MAX'].values
 T_max = data_set['T_MAX']
 lluvia = data_set['Lluvia']
-regressor = LinearRegression()
+regr = LinearRegression()
 
-regressor.fit(viento_max, NO2)
-print("R cuadrado test = ", regressor.score(NO2, viento_max))
+regr.fit(NO2,viento_max)
+print("R cuadrado test = ", regr.score(NO2,viento_max))
 
-## NO2 con Viento_MAX y T_MAX
+## NO2 con Viento MAx y T_MAX
+    
+regr.fit(NO2,viento_max,T_max)
+print("R cuadrado test = ", regr.score(NO2,viento_max,T_max))
 
-X = data_set[['Viento_MAX', 'T_MAX']]
-for train_index, test_index in split(X):
-    X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-    y_train, y_test = NO2.iloc[train_index], NO2.iloc[test_index]
-    regressor.fit(X_train, y_train)
-    print("R cuadrado test = ", regressor.score(X_test, y_test))
-    y_pred = regressor.predict(X_test)
+
+
+    
