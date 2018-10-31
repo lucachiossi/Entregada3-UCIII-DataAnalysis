@@ -77,10 +77,13 @@ plt.hist(z, bins=50, density=1)
 plt.title("Histograma")
 plt.show()
 
+# Skew
+print("Skew:")
+print(data_set['T_MAX'].skew())
+
 # Kurtosis
-sci.stats.kurtosis(z, bias=False) # No funciona
-plt.title("kurtosis plot")
-plt.show()
+print("Kurtosis:")
+print(data_set['T_MAX'].kurtosis())
 
 ## Graph T MAX / CO & O3
 df= data_set.sort_values(['T_MAX','CO'],ascending=True)
