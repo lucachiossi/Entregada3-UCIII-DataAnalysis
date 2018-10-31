@@ -12,8 +12,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
-folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
-# folder = "C:/Users/lucac_000/Desktop/Luca/UNIVERSITA/__MAGISTRALE__/_II_anno/M1_Analisis_de_Datos/___Lboratory/documents_lab_3/shared work/"
+# folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
+folder = "C:/Users/lucac_000/Desktop/Luca/UNIVERSITA/__MAGISTRALE__/_II_anno/M1_Analisis_de_Datos/___Lboratory/documents_lab_3/shared work/"
 
 
 ## Read DataSet
@@ -73,7 +73,7 @@ plt.title("Normal Q-Q plot")
 plt.show()
 
 # Histogram
-plt.hist(z, bins=10, density=1)
+plt.hist(z, bins=50, density=1)
 plt.title("Histograma")
 plt.show()
 
@@ -103,27 +103,22 @@ plt.show()
 plt.close()
 
 ## Correlation Matrix
-data_set_corr = data_set.corr()
+data_set_corr = data_set
+data_set_corr['Mes'] = data_set_corr['Mes'].map({'ENE': 1, 'FEB': 2, 'MAR': 3, 'ABR': 4,
+                                                 'MAY': 5, 'JUN': 6, 'JUL': 7, 'AGO': 8,
+                                                 'SEP': 9, 'OCT': 10, 'NOV': 11, 'DIC': 12})
 f = open(folder + "dataset_corr.txt","w")
-f.write(data_set_corr.to_string())
+f.write(data_set_corr.corr().to_string())
 f.close()
-NO2 = data_set_corr['NO2']
+NO2 = data_set_corr.corr()['NO2']
 print(NO2.sort_values())
 
 ## HeatMap
-mask = np.zeros((30,30))
-for i in range (0,30):
-    for j in range (0,30):
+mask = np.zeros((31,31))
+for i in range (0,31):
+    for j in range (0,31):
         if i<j:
             mask[i,j]=True
-sns.heatmap(data_set.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=0.4, cbar= True, square = True, mask = mask)
+sns.heatmap(data_set_corr.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=0.4, cbar= True, square = True, mask = mask)
 plt.show()
 plt.close()
-# Se puede observa 2 diagonales rojas (de alta correlacion). La primera es la diagonal principal y la segunda es cada elemento en frente del mismo elemente_MAX. Entonces no es relevante conservar las valores MAX.
-
-# Delete columns   CO_MAX  NO_MAX  NO2_MAX  PM2.5_MAX  PM10_MAX  O3_MAX  Tolueno_MAX  Benceno_MAX  Ethilbenceno_MAX  Hidrocarburos totales_MAX  Hidrocarburos no metánicos_MAX
-data_set.drop('SO2_MAX', axis=1, inplace=True)
-
-f = open(folder + "dataset_V2.txt", "w")
-f.write(data_set.to_string())
-f.close()
