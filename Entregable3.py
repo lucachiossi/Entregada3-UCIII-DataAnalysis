@@ -5,12 +5,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import scipy as sci
+import statsmodels.api as sm
 
 from sklearn.datasets import load_boston
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
+from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 
 folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
@@ -170,14 +172,15 @@ print("NO2 = ", regr.coef_[0], "Viento_MAX + ", regr.coef_[1], "T_MAX + ", regr.
 
 ## NO2 con Viento_Max, T_Max y Lluvia
 Viento_T_lluvia = data_set[['Lluvia','T_MAX','Viento_MAX']]
-regr.fit(Viento_T_lluvias,NO2)
+regr.fit(Viento_T_lluvia,NO2)
 print("R cuadrado = ", regr.score(Viento_T_lluvia,NO2))
 print("coeff lineal = ",regr.coef_)
 print("intersection punto = ",regr.intercept_)
 print("NO2 = ", regr.coef_[2], "Viento_MAX + ", regr.coef_[1], "T_MAX + ", regr.coef_[0],"Lluvia + ", regr.intercept_)
 
 ## Multicolinealidad
-#vif = [variance_inflation_factor(NO2.values,i) for i in range(NO2.shape[1])]
+NO2_2= NO2.reshape(-1,1)
+#vif = [variance_inflation_factor(NO2_2.,i) for i in range(NO2_2.shape[1])]
 
 
 
