@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 
+
 folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
 #folder = "C:/Users/lucac_000/Desktop/Luca/UNIVERSITA/__MAGISTRALE__/_II_anno/M1_Analisis_de_Datos/___Lboratory/documents_lab_3/shared work/"
 
@@ -149,20 +150,35 @@ f.close()
 
 # print(data_set['NO2'].shape)
 # print(data_set['Viento_MAX'].shape)
-NO2 = data_set['NO2'].values.reshape(-1,1)
-viento_max = data_set['Viento_MAX'].values
-T_max = data_set['T_MAX']
-lluvia = data_set['Lluvia']
+NO2 = data_set['NO2'].values
+viento_max = data_set['Viento_MAX'].values.reshape(-1,1)
 regr = LinearRegression()
 
-regr.fit(NO2,viento_max)
-print("R cuadrado test = ", regr.score(NO2,viento_max))
+regr.fit(viento_max,NO2)
+print("R cuadrado = ", regr.score(viento_max,NO2))
+print("coeff lineal = ",regr.coef_)
+print("intersection punto = ",regr.intercept_)
+print("NO2 = ", regr.coef_[0], "Viento_MAX + ", regr.intercept_)
 
 ## NO2 con Viento MAx y T_MAX
-    
-regr.fit(NO2,viento_max,T_max)
-print("R cuadrado test = ", regr.score(NO2,viento_max,T_max))
+Viento_y_T_max = data_set[['Viento_MAX','T_MAX']]
+regr.fit(Viento_y_T_max,NO2)
+print("R cuadrado = ", regr.score(Viento_y_T_max,NO2))
+print("coeff lineal = ",regr.coef_)
+print("intersection punto = ",regr.intercept_)
+print("NO2 = ", regr.coef_[0], "Viento_MAX + ", regr.coef_[1], "T_MAX + ", regr.intercept_)
+
+## NO2 con Viento_Max, T_Max y Lluvia
+Viento_T_lluvia = data_set[['Lluvia','T_MAX','Viento_MAX']]
+regr.fit(Viento_T_lluvias,NO2)
+print("R cuadrado = ", regr.score(Viento_T_lluvia,NO2))
+print("coeff lineal = ",regr.coef_)
+print("intersection punto = ",regr.intercept_)
+print("NO2 = ", regr.coef_[2], "Viento_MAX + ", regr.coef_[1], "T_MAX + ", regr.coef_[0],"Lluvia + ", regr.intercept_)
+
+## Multicolinealidad
+#vif = [variance_inflation_factor(NO2.values,i) for i in range(NO2.shape[1])]
 
 
 
-    
+
