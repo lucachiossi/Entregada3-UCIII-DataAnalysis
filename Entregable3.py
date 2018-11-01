@@ -110,9 +110,8 @@ plt.close()
 
 ## Correlation Matrix
 data_set_corr = data_set
-data_set_corr['Mes'] = data_set_corr['Mes'].map({'ENE': 1, 'FEB': 2, 'MAR': 3, 'ABR': 4,
-                                                 'MAY': 5, 'JUN': 6, 'JUL': 7, 'AGO': 8,
-                                                 'SEP': 9, 'OCT': 10, 'NOV': 11, 'DIC': 12})
+data_set_corr['Mes'] = data_set_corr['Mes'].map({'ENE': 1, 'FEB': 2, 'MAR': 3,'ABR': 4, 'MAY': 5, 'JUN': 6, 'JUL': 7, 'AGO': 8, 'SEP': 9, 'OCT': 10, 'NOV': 11, 'DIC': 12})
+data_set_corr['Dia_sem']= data_set_corr['Dia_sem'].map({'L':1,'M':2,'X':3,'J':4,'V':5,'S':6,'D':7})
 f = open(folder + "dataset_corr.txt","w")
 f.write(data_set_corr.corr().to_string())
 f.close()
@@ -120,9 +119,9 @@ NO2_corr = data_set_corr.corr()['NO2']
 print(NO2_corr.sort_values())
 
 ## HeatMap
-mask = np.zeros((31,31))
-for i in range (0,31):
-    for j in range (0,31):
+mask = np.zeros((32,32))
+for i in range (0,32):
+    for j in range (0,32):
         if i<j:
             mask[i,j]=True
 sns.heatmap(data_set_corr.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=0.4, cbar= True, square = True, mask = mask)
@@ -131,6 +130,7 @@ plt.close()
 
 
 ## Delete columns                       
+data_set.drop('Dia_sem', axis=1, inplace=True) #Low correlation coeff
 data_set.drop('SO2_MAX', axis=1, inplace=True)
 data_set.drop('CO_MAX', axis=1, inplace=True)
 data_set.drop('NO_MAX', axis=1, inplace=True)
@@ -158,6 +158,7 @@ for i in range (0,19):
 sns.heatmap(data_set.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=0.4, cbar= True, square = True, mask = mask)
 plt.show()
 plt.close()
+
 ## NO2 con Viento_Max
 
 # print(data_set['NO2'].shape)
@@ -190,7 +191,7 @@ print("NO2 = ", regr.coef_[2], "Viento_MAX + ", regr.coef_[1], "T_MAX + ", regr.
 
 ## Multicolinealidad
 vif = [variance_inflation_factor(data_set.values,i) for i in range(data_set.shape[1])]
-
+print(vif) # V.I.F. = 1 / (1 - R^2)
 
 
 
