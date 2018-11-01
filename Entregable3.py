@@ -13,6 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+from sklearn.tree import DecisionTreeRegressor
 
 
 folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
@@ -172,6 +173,7 @@ print("R cuadrado = ", regr.score(viento_max,NO2))
 print("coeff lineal = ",regr.coef_)
 print("intersection punto = ",regr.intercept_)
 print("NO2 = ", regr.coef_[0], "Viento_MAX + ", regr.intercept_)
+print (np.polyfit(data_set['Viento_MAX'],data_set['NO2'],1)) #confirmacion
 
 ## NO2 con Viento MAx y T_MAX
 Viento_y_T_max = data_set[['Viento_MAX','T_MAX']]
@@ -191,7 +193,52 @@ print("NO2 = ", regr.coef_[2], "Viento_MAX + ", regr.coef_[1], "T_MAX + ", regr.
 
 ## Multicolinealidad
 vif = [variance_inflation_factor(data_set.values,i) for i in range(data_set.shape[1])]
-print(vif) # V.I.F. = 1 / (1 - R^2)
+for i in range(len(vif)):
+        print(vif[i]) # V.I.F. = 1 / (1 - R^2)
+
+## Polinómico para explicar NO2
+for i in range(1,5):
+        poly = np.polyfit(data_set['NO2'],data_set[['Viento_MAX','T_MAX','Lluvia']],i)
+        print(poly)
+        
+## regresión múltiple no lineal basado en árboles
+multArbol = DecisionTreeRegressor()
+multArbol.fit(X5, y)
+yMultArbolPred = multArbol.predict(X5)
+plt.scatter(x=y, y=yMultArbolPred)
+print("R cuadrado (entrenamiento) =", multArbol.score(X5, y))
+
+## Regresor Logistico
+list=[0.1, 0.2, 0.3, 0.4, 0.5 ,0.6, 0.7, 0.8,0.9,1]
+entretamientoLO=[]
+testLO = []
+for i in list:  
+    y = data_set['NO2'].values
+    X = data_set['NO2'].values.drop('NO2', axis = 1)
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = i, random_state = 0)
+# Ajustando/entrenando el modelo
+    modelo = LogisticRegression()
+    modelo.fit(X_train, y_train)
+# Mostrar R cuadrado
+    entretamientoLO.append(modelo.score(X_train, y_train))
+# Prediction en test
+    y_pred = modelo.predict(X_test)
+# Mostrar R cuadrado en test
+    testLO.append(modelo.score(X_test,y_test))
+print("R cuadrado (entretamientoLO): ",entretamientoLO)
+print( "R cuadrado (testLO): ",testLO)
+plt.plot(list, entretamientoLO,'b', label='Entretamiento')
+plt.plot(list, testLO,'r',label='Test')
+plt.legend()
+plt.xlabel('Percentage of testing data')
+plt.ylabel('R²')
+plt.title('Regresion LOGISTICO')
+plt.show()
+plt.clf()
+
+
+
+
 
 
 
