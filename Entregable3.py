@@ -15,7 +15,7 @@ from sklearn.naive_bayes import GaussianNB
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.tree import DecisionTreeRegressor
 
-
+# As we were sending the code to each other using GitKraken, it was easier to just comment and uncomment the wrong and right path
 folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
 #folder = "C:/Users/lucac_000/Desktop/Luca/UNIVERSITA/__MAGISTRALE__/_II_anno/M1_Analisis_de_Datos/___Lboratory/documents_lab_3/shared work/"
 
@@ -23,7 +23,7 @@ folder = "C:/Users/lowei/Desktop/Espagne/Cours/Data Analysis/Practica 2/"
 ## Read DataSet
 data_set = pd.read_csv(folder + "meteo_calidad_2015.csv", decimal=",", sep=";")
 
-# Import dataset and renaming columns
+# Renaming columns to be more understandable
 data_set.rename(columns ={'TOL':'Tolueno'}, inplace=True)
 data_set.rename(columns ={'TOL_MAX':'Tolueno_MAX'}, inplace=True)
 data_set.rename(columns ={'BEN':'Benceno'}, inplace=True)
@@ -41,7 +41,7 @@ data_set.rename(columns ={'TCH_MAX':'Hidrocarburos totales_MAX'}, inplace=True)
 data_set.rename(columns ={'NMCH':'Hidrocarburos no metánicos'}, inplace=True)
 data_set.rename(columns ={'NMCH_MAX':'Hidrocarburos no metánicos_MAX'}, inplace=True)
 
-# Delete "Dia" column
+# Delete "Dia" column because it is irrelevant
 data_set.drop('Dia', axis=1, inplace=True)
 
 f = open(folder + "dataset.txt", "w")
@@ -67,8 +67,8 @@ data_set_month = data_set.groupby(['Mes'])
 f = open(folder + "dataset_by_month.txt","w")
 f.write(data_set_month.describe().to_string())
 f.close()
-print (data_set_month['T_MAX'].agg(np.mean))
-print("Temperatura maximal media del ano" , data_set_month['T_MAX'].agg(np.mean).agg(np.mean), "°C")
+print (data_set_month['T_MAX'].agg(np.mean)) # show the average temperature of each month
+print("Temperatura maximal media del ano" , data_set_month['T_MAX'].agg(np.mean).agg(np.mean), "°C") # Average temperature during the year
 
 ## QQ plot: Similitude rate between max-temperature and normal-distribution
 z = (data_set['T_MAX']-np.mean(data_set['T_MAX']))/np.std(data_set['T_MAX'])
@@ -112,12 +112,12 @@ plt.close()
 ## Correlation Matrix
 data_set_corr = data_set
 data_set_corr['Mes'] = data_set_corr['Mes'].map({'ENE': 1, 'FEB': 2, 'MAR': 3,'ABR': 4, 'MAY': 5, 'JUN': 6, 'JUL': 7, 'AGO': 8, 'SEP': 9, 'OCT': 10, 'NOV': 11, 'DIC': 12})
-data_set_corr['Dia_sem']= data_set_corr['Dia_sem'].map({'L':1,'M':2,'X':3,'J':4,'V':5,'S':6,'D':7})
+data_set_corr['Dia_sem']= data_set_corr['Dia_sem'].map({'L':1,'M':2,'X':3,'J':4,'V':5,'S':6,'D':7}) #changing nominal attributes to numeric in order to see their influence in the correlation matrix
 f = open(folder + "dataset_corr.txt","w")
 f.write(data_set_corr.corr().to_string())
 f.close()
 NO2_corr = data_set_corr.corr()['NO2']
-print(NO2_corr.sort_values())
+print(NO2_corr.sort_values()) # Print all the correlation coeff to see which one is the most related to NO2
 
 ## HeatMap
 mask = np.zeros((32,32))
@@ -128,7 +128,7 @@ for i in range (0,32):
 sns.heatmap(data_set_corr.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=0.4, cbar= True, square = True, mask = mask)
 plt.show()
 plt.close()
-
+# We can see 2 diagonals. The main one which is an attribute in front of himself. The second one is an attribute in front of himself_max. Therefore, it is not relevante to keep both attributes since they give the same informations.
 
 ## Delete columns                       
 data_set.drop('Dia_sem', axis=1, inplace=True) #Low correlation coeff
@@ -150,7 +150,7 @@ f.write(data_set.to_string())
 f.close()
 
 ## HeatMap V2
-
+# Showing the heat map without all the useless attributes
 mask = np.zeros((19,19))
 for i in range (0,19):
     for j in range (0,19):
@@ -167,13 +167,12 @@ plt.close()
 NO2 = data_set['NO2'].values
 viento_max = data_set['Viento_MAX'].values.reshape(-1,1)
 regr = LinearRegression()
-
 regr.fit(viento_max,NO2)
 print("R cuadrado = ", regr.score(viento_max,NO2))
 print("coeff lineal = ",regr.coef_)
 print("intersection punto = ",regr.intercept_)
 print("NO2 = ", regr.coef_[0], "Viento_MAX + ", regr.intercept_)
-print (np.polyfit(data_set['Viento_MAX'],data_set['NO2'],1)) #confirmacion
+print (np.polyfit(data_set['Viento_MAX'],data_set['NO2'],1)) # confirmation with another function
 
 ## NO2 con Viento MAx y T_MAX
 Viento_y_T_max = data_set[['Viento_MAX','T_MAX']]
@@ -194,13 +193,14 @@ print("NO2 = ", regr.coef_[2], "Viento_MAX + ", regr.coef_[1], "T_MAX + ", regr.
 ## Multicolinealidad
 vif = [variance_inflation_factor(data_set.values,i) for i in range(data_set.shape[1])]
 for i in range(len(vif)):
-        print(vif[i]) # V.I.F. = 1 / (1 - R^2)
+        print(vif[i]) # V.I.F. = 1/(1-R^2)
 
 ## Polinómico para explicar NO2
 for i in range(1,5):
         poly = np.polyfit(data_set['NO2'],data_set[['Viento_MAX','T_MAX','Lluvia']],i)
         print(poly)
-        
+# the equations only link one attribute with NO2. We did not manage to find the equation linking NO2 with all the three attributes at the same time
+     
 ## Regresión múltiple no lineal basado en árboles
 multArbol = DecisionTreeRegressor()
 multArbol.fit(Viento_T_lluvia, NO2)
@@ -208,8 +208,9 @@ yMultArbolPred = multArbol.predict(Viento_T_lluvia)
 plt.scatter(x=NO2, y=yMultArbolPred)
 print("R cuadrado = ", multArbol.score(Viento_T_lluvia, NO2))
 
+
 ## Create a Class column
-data_set['target']= pd.Series(np.zeros(len(data_set['NO2'])), index=data_set.index)
+data_set['target']= pd.Series(np.zeros(len(data_set['NO2'])), index=data_set.index) # Spliting the datas in 4 folds to keep relevant size of fold
 for i in range (len(data_set['NO2'])):
     if data_set['NO2'][i] < 35:
         data_set['target'][i]=0
@@ -229,14 +230,14 @@ for i in list:
     y = data_set.target
     X = data_set.drop('target', axis = 1)
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = i, random_state = 0)
-# Ajustando/entrenando el modelo
+    # Ajustando/entrenando el modelo
     modelo = LogisticRegression()
     modelo.fit(X_train, y_train)
-# Mostrar R cuadrado
+    # Mostrar R cuadrado
     entretamientoLO.append(modelo.score(X_train, y_train))
-# Prediction en test
+    # Prediction en test
     y_pred = modelo.predict(X_test)
-# Mostrar R cuadrado en test
+    # Mostrar R cuadrado en test
     testLO.append(modelo.score(X_test,y_test))
 print("R cuadrado (entretamientoLO): ",entretamientoLO)
 print( "R cuadrado (testLO): ",testLO)
@@ -248,8 +249,11 @@ plt.ylabel('R²')
 plt.title('Regresion LOGISTICO')
 plt.show()
 plt.clf()
+# The best result is obtained for test_size = 0.5
+
 
 ## Regresor Logistico with T_Max, Lluvia and Viento_Max
+# This is to see how exact the prediction could have been with only these attributes. Results are very low and show that they are not suffisant. The other attributes are also relevant 
 list=[0.1, 0.2, 0.3, 0.4, 0.5 ,0.6, 0.7, 0.8,0.9]
 entretamientoLO=[]
 testLO = []
@@ -300,7 +304,7 @@ for j in range (1,len(y_pred)-2):
         cpt2 +=1
     elif abs(y_pred[j] -np.array( y_test)[j]) == 3:
         cpt3 +=1
-
+# this shows how many values were correctly predicted (cpt0), how many are not in the good class but in the closest one (cpt1), how many are two class away (cpt2) ...
 print ('cpt0: ', cpt0); print ('cpt1: ', cpt1); print ('cpt2: ', cpt2); print ('cpt3: ', cpt3)
 print('R cuadrado(test)= ', modelo.score(X_test, y_test))
 print('R cuadrado(pred)= ', modelo.score(X_test, y_pred))
@@ -314,13 +318,13 @@ for i in list:
     y = data_set.target
     X = data_set.drop('target', axis = 1)
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = i, random_state = 0)
-# Ajustando/entrenando el modelo
+    # Ajustando/entrenando el modelo
     modelo.fit(X_train, y_train)
-# Mostrar R cuadrado
+    # Mostrar R cuadrado
     entretamientoBN.append(modelo.score(X_train, y_train))
-# Prediction en test
+    # Prediction en test
     y_pred = modelo.predict(X_test)
-# Mostrar R cuadrado en test
+    # Mostrar R cuadrado en test
     testBN.append(modelo.score(X_test,y_test))
 print("R cuadrado (entretamientoBN): ",entretamientoBN)
 print("R cuadrado (testBN): ",testBN)
@@ -392,7 +396,7 @@ plt.clf()
 cpt0=0; cpt1=0; cpt2=0; cpt3=0
 y = data_set.target
 X = data_set.drop('target', axis = 1)
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.4, random_state = 0) #test_size=0.1 was better but 
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.4, random_state = 0) # test_size=0.1 was better but the test is more relevant on more data. Test_size = 0.4 is a good compromise to have a good prediction and a test on a large amount of data
 multArbol = DecisionTreeRegressor()
 multArbol.fit(X_train, y_train)
 # Mostrar R cuadrado
