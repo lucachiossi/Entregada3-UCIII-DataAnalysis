@@ -116,8 +116,8 @@ data_set_corr['Mes'] = data_set_corr['Mes'].map({'ENE': 1, 'FEB': 2, 'MAR': 3, '
 f = open(folder + "dataset_corr.txt","w")
 f.write(data_set_corr.corr().to_string())
 f.close()
-NO2 = data_set_corr.corr()['NO2']
-print(NO2.sort_values())
+NO2_corr = data_set_corr.corr()['NO2']
+print(NO2_corr.sort_values())
 
 ## HeatMap
 mask = np.zeros((31,31))
@@ -148,6 +148,16 @@ f = open(folder + "dataset_V2.txt", "w")
 f.write(data_set.to_string())
 f.close()
 
+## HeatMap V2
+
+mask = np.zeros((19,19))
+for i in range (0,19):
+    for j in range (0,19):
+        if i<j:
+            mask[i,j]=True
+sns.heatmap(data_set.corr(), vmin=-1, vmax=+1, cmap="bwr", center=0, linewidths=0.4, cbar= True, square = True, mask = mask)
+plt.show()
+plt.close()
 ## NO2 con Viento_Max
 
 # print(data_set['NO2'].shape)
@@ -179,8 +189,7 @@ print("intersection punto = ",regr.intercept_)
 print("NO2 = ", regr.coef_[2], "Viento_MAX + ", regr.coef_[1], "T_MAX + ", regr.coef_[0],"Lluvia + ", regr.intercept_)
 
 ## Multicolinealidad
-NO2_2= NO2.reshape(-1,1)
-#vif = [variance_inflation_factor(NO2_2.,i) for i in range(NO2_2.shape[1])]
+vif = [variance_inflation_factor(data_set.values,i) for i in range(data_set.shape[1])]
 
 
 
