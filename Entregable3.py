@@ -221,7 +221,35 @@ for i in range (len(data_set['NO2'])):
         data_set['target'][i]=3
 
 
-## Regresor Logistico / Finding test size
+## Regresor Logistico / Finding test size 
+list=[0.1, 0.2, 0.3, 0.4, 0.5 ,0.6, 0.7, 0.8,0.9]
+entretamientoLO=[]
+testLO = []
+for i in list:  
+    y = data_set.target
+    X = data_set.drop('target', axis = 1)
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = i, random_state = 0)
+# Ajustando/entrenando el modelo
+    modelo = LogisticRegression()
+    modelo.fit(X_train, y_train)
+# Mostrar R cuadrado
+    entretamientoLO.append(modelo.score(X_train, y_train))
+# Prediction en test
+    y_pred = modelo.predict(X_test)
+# Mostrar R cuadrado en test
+    testLO.append(modelo.score(X_test,y_test))
+print("R cuadrado (entretamientoLO): ",entretamientoLO)
+print( "R cuadrado (testLO): ",testLO)
+plt.plot(list, entretamientoLO,'b', label='Entretamiento')
+plt.plot(list, testLO,'r',label='Test')
+plt.legend()
+plt.xlabel('Percentage of testing data')
+plt.ylabel('R²')
+plt.title('Regresion LOGISTICO')
+plt.show()
+plt.clf()
+
+## Regresor Logistico with T_Max, Lluvia and Viento_Max
 list=[0.1, 0.2, 0.3, 0.4, 0.5 ,0.6, 0.7, 0.8,0.9]
 entretamientoLO=[]
 testLO = []
@@ -252,8 +280,8 @@ plt.clf()
 ## REGRESSOR LOGISTICO / Prediction
 cpt0=0; cpt1=0; cpt2=0; cpt3=0
 y = data_set.target
-X = data_set[['T_MAX','Viento_MAX','Lluvia','target']].drop('target', axis = 1)
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.1, random_state = 0)
+X = data_set.drop('target', axis = 1)
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.5, random_state = 0)
 # Ajustando/entrenando el modelo
 modelo = LogisticRegression()
 modelo.fit(X_train, y_train)
@@ -284,7 +312,7 @@ testBN = []
 modelo = GaussianNB()
 for i in list:  
     y = data_set.target
-    X = data_set[['T_MAX','Viento_MAX','Lluvia','target']].drop('target', axis = 1)
+    X = data_set.drop('target', axis = 1)
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = i, random_state = 0)
 # Ajustando/entrenando el modelo
     modelo.fit(X_train, y_train)
@@ -309,8 +337,8 @@ plt.clf()
 ## MODELO NAIVE-BAYESIANO / Prediction
 cpt0=0; cpt1=0; cpt2=0; cpt3=0
 y = data_set.target
-X = data_set[['T_MAX','Viento_MAX','Lluvia','target']].drop('target', axis = 1)
-X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.3, random_state = 0)
+X = data_set.drop('target', axis = 1)
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.1, random_state = 0)
 # Ajustando/entrenando el modelo
 modelo = GaussianNB()
 modelo.fit(X_train, y_train)
@@ -334,7 +362,7 @@ for j in range (1,len(y_pred)-2):
 
 print ('cpt0: ', cpt0); print ('cpt1: ', cpt1); print ('cpt2: ', cpt2); print ('cpt3: ', cpt3)
 
-## Tree Regressor
+## Tree Regressor - training
 list=[0.1, 0.2, 0.3, 0.4, 0.5 ,0.6, 0.7, 0.8,0.9]
 entretamientoTree=[]
 testTree= []
@@ -342,7 +370,7 @@ multArbol = DecisionTreeRegressor()
 
 for i in list:  
     y = data_set.target
-    X = data_set[['T_MAX','Viento_MAX','Lluvia','target']].drop('target', axis = 1)
+    X = data_set.drop('target', axis = 1)
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = i, random_state = 0)
     multArbol.fit(X_train, y_train)
     entretamientoTree.append( multArbol.score(X_train, y_train))
@@ -360,4 +388,29 @@ plt.title('Tree Regressor')
 plt.show()
 plt.clf()
 
+## Tree Regressor - Prediction
+cpt0=0; cpt1=0; cpt2=0; cpt3=0
+y = data_set.target
+X = data_set.drop('target', axis = 1)
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size = 0.4, random_state = 0) #test_size=0.1 was better but 
+multArbol = DecisionTreeRegressor()
+multArbol.fit(X_train, y_train)
+# Mostrar R cuadrado
+print('R cuadrado (entrenamiento)= ',multArbol.score(X_train, y_train))
+# Prediction en test
+y_pred = multArbol.predict(X_test)
+# Mostrar R cuadrado en test
+# print(y_pred-y_test)
+print('R cuadrado(test)= ', multArbol.score(X_test, y_test))
+print('R cuadrado(pred)= ', multArbol.score(X_test, y_pred))
+for j in range (1,len(y_pred)-2):
+    if y_pred[j]-np.array(y_test)[j] == 0:
+        cpt0 +=1
+    elif abs(y_pred[j] - np.array(y_test)[j]) == 1:
+        cpt1 +=1
+    elif abs(y_pred[j] - np.array(y_test)[j]) == 2:
+        cpt2 +=1
+    elif abs(y_pred[j] -np.array( y_test)[j]) == 3:
+        cpt3 +=1
 
+print ('cpt0: ', cpt0); print ('cpt1: ', cpt1); print ('cpt2: ', cpt2); print ('cpt3: ', cpt3)
